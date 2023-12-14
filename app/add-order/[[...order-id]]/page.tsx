@@ -1,21 +1,19 @@
 import IOrder from "@/app/src/interfaces/Order";
 
-import MOCK_ORDERS from "@/mocks/MOCK_ORDERS";
-import MOCK_PRODUYCTS from "../../../mocks/MOCK_PRODUCTS";
-
 import { Box } from "@mui/material";
 import React from "react";
 import OrderPageDetail from "./OrderPageDetail";
 import IProduct from "@/app/src/interfaces/Product";
 import { Response } from "@/app/src/interfaces/Response";
+import { FRACTAL_SERVICE } from "../../src/constants/API_URL";
+import { parseISO } from "date-fns";
+
 type OrderPageProps = {
   params: { "order-id"?: string };
 };
 
 const OrderPage: React.FC<OrderPageProps> = async ({ params }) => {
   const orderId = params["order-id"];
-  console.log("params", params);
-  
 
   let orderDefaultValues: IOrder = {
     Date: new Date(),
@@ -52,15 +50,25 @@ export default OrderPage;
 
 // SERVER CALLS
 async function getOrderData(orderId: string): Promise<Response<IOrder | null>> {
-  const ORDER = MOCK_ORDERS.find((o) => o.ID === orderId);
-  console.log(">orderId", orderId);
-  console.log(">ORDER", ORDER);
-  
-  if (!ORDER) {
-    return { data: null, status: 404, message: "not found" };
+  try {
+    const res = await fetch(`${FRACTAL_SERVICE}/orders/${orderId}`);
+
+    if (!res.ok) {
+      return { data: null, status: res.status, message: "not found" };
+    }
+
+    const data: Response<IOrder> = await res.json();
+    data.data.Date = parseISO(data.data.Date + "");
+
+    return { data: data.data, status: 200, message: "success" };
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    return { data: null, status: 500, message: "Internal Server Error" };
   }
-  return { data: ORDER, status: 200, message: "success" };
 }
 async function getProductsData(): Promise<Response<IProduct[]>> {
-  return { data: MOCK_PRODUYCTS, status: 200, message: "success" };
+  const res = await fetch(`${FRACTAL_SERVICE}/products`);
+  const data: Response<IProduct[]> = await res.json();
+
+  return { data: data.data, status: 200, message: "success" };
 }

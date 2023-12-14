@@ -16,19 +16,17 @@ import { IProductOrder } from "../interfaces/Product";
 const IconButton = dynamic(() => import("@mui/material/IconButton"));
 const Stack = dynamic(() => import("@mui/material/Stack"));
 
-type ProducTableProps = {
+type ProductTableProps = {
   rows: IProductOrder[];
   selectProduct(product: IProductOrder): void;
   deleteProduct(product: IProductOrder): void;
 };
 
-const ProducTable: React.FC<ProducTableProps> = ({
+const ProductTable: React.FC<ProductTableProps> = ({
   rows,
   selectProduct,
   deleteProduct,
 }) => {
-  // return <h1>asdasd</h1>
-  const router = useRouter();
 
   return (
     <TableContainer component={Paper}>
@@ -36,11 +34,11 @@ const ProducTable: React.FC<ProducTableProps> = ({
         <TableHead>
           <TableRow>
             <TableCell align="center">ID</TableCell>
-            <TableCell align="right">Name</TableCell>
-            <TableCell align="right">Unit Price</TableCell>
-            <TableCell align="right">Qty</TableCell>
-            <TableCell align="right">Total Price</TableCell>
-            <TableCell align="right">Options</TableCell>
+            <TableCell align="center">Name</TableCell>
+            <TableCell align="center">Unit Price</TableCell>
+            <TableCell align="center">Qty</TableCell>
+            <TableCell align="center">Total Price</TableCell>
+            <TableCell align="center">Options</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -49,15 +47,15 @@ const ProducTable: React.FC<ProducTableProps> = ({
               key={row.Product.ID}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" align="center">
                 {row.Product.ID}
               </TableCell>
-              <TableCell align="right">{row.Product.Name}</TableCell>
-              <TableCell align="right">{row.Product.UnitPrice}</TableCell>
-              <TableCell align="right">{row.Qty}</TableCell>
-              <TableCell align="right">{row.TotalPrice}</TableCell>
+              <TableCell align="center">{row.Product.Name}</TableCell>
+              <TableCell align="center">{row.Product.UnitPrice}</TableCell>
+              <TableCell align="center">{row.Qty}</TableCell>
+              <TableCell align="center">{row.TotalPrice}</TableCell>
               <TableCell align="center">
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} justifyContent="center">
                   <IconButton
                     aria-label="delete"
                     color="error"
@@ -82,4 +80,4 @@ const ProducTable: React.FC<ProducTableProps> = ({
   );
 };
 
-export default ProducTable;
+export default ProductTable;

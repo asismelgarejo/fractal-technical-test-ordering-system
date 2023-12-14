@@ -1,6 +1,5 @@
 "use client";
 import IOrder from "@/app/src/interfaces/Order";
-import { SubmitHandler } from "react-hook-form";
 import OrderTable from "./src/componets/OrderTable";
 import { Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,10 +9,6 @@ type HomePageProps = {
   orders: IOrder[];
 };
 const HomePage: React.FC<HomePageProps> = ({ orders }) => {
-  const onSubmit: SubmitHandler<Omit<IOrder, "ID">> = (data) => {
-    console.log(data);
-    // Handle form submission logic here
-  };
   const router = useRouter();
 
   return (

@@ -133,7 +133,6 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <Controller
                 name="Date"
                 control={control}
-                defaultValue={new Date()}
                 rules={{ required: "Date is required" }}
                 render={() => (
                   <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -11,7 +11,7 @@ import IOrder from "@/app/src/interfaces/Order";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
+import { format, parseISO  } from "date-fns";
 
 import dynamic from "next/dynamic";
 const IconButton = dynamic(() => import("@mui/material/IconButton"));
@@ -31,11 +31,11 @@ const OrderTable: React.FC<OrderTableProps> = ({ rows }) => {
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>
-            <TableCell align="right">Order</TableCell>
-            <TableCell align="right">Date</TableCell>
-            <TableCell align="right">Products</TableCell>
-            <TableCell align="right">Final Price</TableCell>
-            <TableCell align="right">Options</TableCell>
+            <TableCell align="center">Order</TableCell>
+            <TableCell align="center">Date</TableCell>
+            <TableCell align="center">Products</TableCell>
+            <TableCell align="center">Final Price</TableCell>
+            <TableCell align="center">Options</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -47,16 +47,16 @@ const OrderTable: React.FC<OrderTableProps> = ({ rows }) => {
               <TableCell component="th" scope="row">
                 {row.ID}
               </TableCell>
-              <TableCell align="right">{row.Order}</TableCell>
-              <TableCell align="right">
+              <TableCell align="center">{row.Order}</TableCell>
+              <TableCell align="center">
                 {format(row.Date, "dd-MM-yyyy")}
               </TableCell>
-              <TableCell align="right">
+              <TableCell align="center">
                 {row.Products.map((p) => p.Product.Name).join(", ")}
               </TableCell>
-              <TableCell align="right">{row.FinalPrice}</TableCell>
+              <TableCell align="center">{row.FinalPrice}</TableCell>
               <TableCell align="center">
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} justifyContent="center">
                   <IconButton aria-label="delete" color="error">
                     <DeleteIcon />
                   </IconButton>

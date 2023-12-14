@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
-import MOCK_ORDERS from "../mocks/MOCK_ORDERS";
 import HomePage from "./HomePage";
 import { Response } from "./src/interfaces/Response";
 import IOrder from "./src/interfaces/Order";
+import { FRACTAL_SERVICE } from "./src/constants/API_URL";
+import { parseISO  } from "date-fns";
 
 export default async function Page() {
   const ordersData = await getOrdersData();
@@ -15,10 +15,16 @@ export default async function Page() {
     );
   });
 
+  // return <h1>sdfsdfsdf</h1>;
   return <HomePage orders={ordersData.data} />;
 }
 
 async function getOrdersData(): Promise<Response<IOrder[]>> {
-  return { data: MOCK_ORDERS, status: 200, message: "success" };
-}
+  const res = await fetch(`${FRACTAL_SERVICE}/orders`);
+  const data: Response<IOrder[]> = await res.json();
+  data.data.forEach((order)=>{
+    order.Date = parseISO(order.Date+"")
+  })
 
+  return { data: data.data, status: 200, message: "success" };
+}
