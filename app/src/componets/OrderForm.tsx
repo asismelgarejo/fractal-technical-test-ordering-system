@@ -42,6 +42,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
   });
 
   const [openDialog, setOpenProductFormDialog] = useState(false);
+  const [toggle, setToggle] = useState(false);
   const [openRemoveProductDialog, setOpenRemoveProductDialog] = useState(false);
 
   const handleClose = () => {
@@ -69,11 +70,22 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
     const idx = products.findIndex((p) => p.Product.ID === product.Product.ID);
     if (idx === -1) {
+      product.TotalPrice =product.Qty *product!.Product.UnitPrice;
       products.push(product);
     } else {
       products[idx].Qty = product.Qty;
+      products[idx].TotalPrice = products[idx].Qty * products[idx]!.Product.UnitPrice;
     }
+
     setValue("Products", products);
+  };
+  const updateFinalPrice = (products: IProductOrder[]) => {
+    const amount = products.reduce(
+      (prev, next) => prev + next.Qty * next.Product.UnitPrice,
+      0
+    );
+    setValue("FinalPrice", +amount.toFixed(2));
+    setToggle(!toggle);
   };
 
   return (
@@ -101,12 +113,11 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <Controller
                 name="Order"
                 control={control}
-                defaultValue={0}
-                rules={{ required: "Order number is required" }}
+                rules={{ required: "Order code is required" }}
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
-                    label="Order Number"
+                    label="Order Code"
                     fullWidth
                     variant="outlined"
                     error={!!fieldState.error}
@@ -143,7 +154,6 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <Controller
                 name="FinalPrice"
                 control={control}
-                defaultValue={0}
                 rules={{ required: "Final Price is required" }}
                 render={({ field, fieldState }) => (
                   <TextField
@@ -210,6 +220,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
           onSubmit={(orderProduct) => {
             addProduct(orderProduct as IProductOrder);
             setOpenProductFormDialog(false);
+            updateFinalPrice(getValues("Products"));
           }}
         />
       </OrderProductDialog>
@@ -219,6 +230,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
           if (!selectedProduct) return;
           removeProduct(selectedProduct);
           setOpenRemoveProductDialog(false);
+          updateFinalPrice(getValues("Products"));
         }}
         open={openRemoveProductDialog}
       />

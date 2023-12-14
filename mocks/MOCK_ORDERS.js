@@ -1,7 +1,7 @@
 const ORDERS = [
   {
     ID: "1",
-    Order: 1,
+    Order: "1",
     Date: new Date(),
     FinalPrice: 123,
     Products: [

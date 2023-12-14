@@ -4,6 +4,7 @@ import { SubmitHandler } from "react-hook-form";
 import OrderTable from "./src/componets/OrderTable";
 import { Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { useRouter } from "next/navigation";
 
 type HomePageProps = {
   orders: IOrder[];
@@ -13,6 +14,7 @@ const HomePage: React.FC<HomePageProps> = ({ orders }) => {
     console.log(data);
     // Handle form submission logic here
   };
+  const router = useRouter();
 
   return (
     <Box sx={{ margin: "32px 0 16px" }}>
@@ -22,7 +24,7 @@ const HomePage: React.FC<HomePageProps> = ({ orders }) => {
         variant="contained"
         startIcon={<AddIcon />}
         size="medium"
-        onClick={() => {}}
+        onClick={() => router.push(`/add-order/`)}
       >
         Add Order
       </Button>

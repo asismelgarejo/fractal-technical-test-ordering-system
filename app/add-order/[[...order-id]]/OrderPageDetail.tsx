@@ -7,8 +7,9 @@ import { SubmitHandler } from "react-hook-form";
 type OrderPageDetailProps = {
   order: IOrder;
   products: IProduct[];
+  title: string;
 };
-const OrderPageDetail: React.FC<OrderPageDetailProps> = ({ order, products }) => {
+const OrderPageDetail: React.FC<OrderPageDetailProps> = ({ order, products, title }) => {
   const onSubmit: SubmitHandler<Omit<IOrder, "ID">> = (data) => {
     console.log(data);
     // Handle form submission logic here
@@ -16,7 +17,7 @@ const OrderPageDetail: React.FC<OrderPageDetailProps> = ({ order, products }) =>
 
   return (
     <>
-      <OrderForm title="Edit Order" onSubmit={onSubmit} defaultValues={order} products={products}/>
+      <OrderForm title={title} onSubmit={onSubmit} defaultValues={order} products={products}/>
     </>
   );
 };

@@ -1,25 +1,24 @@
+import mongoose from "mongoose";
 import MOCK_ORDERS from "../mocks/MOCK_ORDERS";
 import HomePage from "./HomePage";
+import { Response } from "./src/interfaces/Response";
+import IOrder from "./src/interfaces/Order";
 
 export default async function Page() {
-  const orders = await getData();
+  const ordersData = await getOrdersData();
 
   // compute total order
-  orders.map((order) => {
+  ordersData.data.map((order) => {
     order.FinalPrice = order.Products.reduce(
       (prev, next) => prev + next.Qty * next.Product.UnitPrice,
       0
     );
   });
 
-  return <HomePage orders={orders}/>;
+  return <HomePage orders={ordersData.data} />;
 }
-async function getData() {
-  // const res = await fetch('https://api.example.com/...')
-  // if (!res.ok) {
-  //   // This will activate the closest `error.js` Error Boundary
-  //   throw new Error('Failed to fetch data')
-  // }
 
-  return MOCK_ORDERS;
+async function getOrdersData(): Promise<Response<IOrder[]>> {
+  return { data: MOCK_ORDERS, status: 200, message: "success" };
 }
+
