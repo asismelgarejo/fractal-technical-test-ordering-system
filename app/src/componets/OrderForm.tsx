@@ -24,8 +24,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 type OrderFormProps = {
   title: string;
-  onSubmit: SubmitHandler<Omit<IOrder, "ID">>;
-  defaultValues: Omit<IOrder, "ID">;
+  onSubmit: SubmitHandler<IOrder>;
+  defaultValues: IOrder;
   products: IProduct[];
 };
 
@@ -35,9 +35,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
   onSubmit,
   defaultValues,
 }) => {
-  const { control, handleSubmit, getValues, setValue } = useForm<
-    Omit<IOrder, "ID">
-  >({
+  const { control, handleSubmit, getValues, setValue } = useForm<IOrder>({
     defaultValues,
   });
 
@@ -70,11 +68,12 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
     const idx = products.findIndex((p) => p.Product.ID === product.Product.ID);
     if (idx === -1) {
-      product.TotalPrice =product.Qty *product!.Product.UnitPrice;
+      product.TotalPrice = product.Qty * product!.Product.UnitPrice;
       products.push(product);
     } else {
       products[idx].Qty = product.Qty;
-      products[idx].TotalPrice = products[idx].Qty * products[idx]!.Product.UnitPrice;
+      products[idx].TotalPrice =
+        products[idx].Qty * products[idx]!.Product.UnitPrice;
     }
 
     setValue("Products", products);
@@ -224,6 +223,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
         />
       </OrderProductDialog>
       <RemoveProductModal
+        message="Are you sure you want to remove this product from the order?"
         onClose={() => setOpenRemoveProductDialog(false)}
         onConfirm={() => {
           if (!selectedProduct) return;

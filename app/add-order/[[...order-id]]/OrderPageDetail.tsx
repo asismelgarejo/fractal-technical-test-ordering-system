@@ -15,16 +15,14 @@ type OrderPageDetailProps = {
 
 async function createOrder(payload: IOrder): Promise<Response<null>> {
   try {
-    const res = await fetch(
-      `${FRACTAL_SERVICE}/orders`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      }
-    );
+    const res = await fetch(`${FRACTAL_SERVICE}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      cache: "no-store", // disable the cache completely
+    });
 
     if (!res.ok) {
       throw new Error(`Failed to create order: ${res.statusText}`);
@@ -39,6 +37,33 @@ async function createOrder(payload: IOrder): Promise<Response<null>> {
   }
 }
 
+async function updateOrder(
+  orderId: string,
+  payload: IOrder
+): Promise<Response<null>> {
+  try {
+    const res = await fetch(`${FRACTAL_SERVICE}/orders/${orderId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      cache: "no-store", // disable the cache completely
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to update order: ${res.statusText}`);
+    }
+
+    const data: Response<null> = await res.json();
+
+    return { data: null, status: 200, message: "success" };
+  } catch (error) {
+    console.error("Error updating order:", error);
+    return { data: null, status: 500, message: "Internal Server Error" };
+  }
+}
+
 const OrderPageDetail: React.FC<OrderPageDetailProps> = ({
   order,
   products,
@@ -46,8 +71,22 @@ const OrderPageDetail: React.FC<OrderPageDetailProps> = ({
 }) => {
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<Omit<IOrder, "ID">> = async (data) => {
-    await createOrder(data as IOrder);
+  const onSubmit: SubmitHandler<IOrder> = async (data) => {
+    if (data.ID === "") {
+      const response = await createOrder(data as IOrder);
+      if (response.status >= 300) {
+        alert(response.message);
+        return;
+      }
+      alert(response.message);
+    } else {
+      const response = await updateOrder(data.ID, data as IOrder);
+      if (response.status >= 300) {
+        alert(response.message);
+        return;
+      }
+      alert(response.message);
+    }
     router.push("/");
   };
 

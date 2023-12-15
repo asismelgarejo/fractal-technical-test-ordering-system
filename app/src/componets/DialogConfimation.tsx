@@ -12,20 +12,20 @@ type RemoveProductModalProps = {
   open: boolean;
   onClose(): void;
   onConfirm(): void;
+  message: string;
 };
 
 const RemoveProductModal: React.FC<RemoveProductModalProps> = ({
   open,
   onClose,
   onConfirm,
+  message,
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Remove Product</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Are you sure you want to remove this product from the order?
-        </DialogContentText>
+        <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">

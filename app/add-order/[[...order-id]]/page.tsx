@@ -18,7 +18,7 @@ const OrderPage: React.FC<OrderPageProps> = async ({ params }) => {
   let orderDefaultValues: IOrder = {
     Date: new Date(),
     FinalPrice: 0,
-    ID: "0",
+    ID: "",
     Order: "",
     Products: [],
   };
@@ -51,7 +51,9 @@ export default OrderPage;
 // SERVER CALLS
 async function getOrderData(orderId: string): Promise<Response<IOrder | null>> {
   try {
-    const res = await fetch(`${FRACTAL_SERVICE}/orders/${orderId}`);
+    const res = await fetch(`${FRACTAL_SERVICE}/orders/${orderId}`, {
+      cache: "no-store", // disable the cache completely
+    });
 
     if (!res.ok) {
       return { data: null, status: res.status, message: "not found" };
@@ -67,7 +69,9 @@ async function getOrderData(orderId: string): Promise<Response<IOrder | null>> {
   }
 }
 async function getProductsData(): Promise<Response<IProduct[]>> {
-  const res = await fetch(`${FRACTAL_SERVICE}/products`);
+  const res = await fetch(`${FRACTAL_SERVICE}/products`, {
+    cache: "no-store", // disable the cache completely
+  });
   const data: Response<IProduct[]> = await res.json();
 
   return { data: data.data, status: 200, message: "success" };

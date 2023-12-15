@@ -11,7 +11,7 @@ import IOrder from "@/app/src/interfaces/Order";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
-import { format, parseISO  } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 import dynamic from "next/dynamic";
 const IconButton = dynamic(() => import("@mui/material/IconButton"));
@@ -19,9 +19,10 @@ const Stack = dynamic(() => import("@mui/material/Stack"));
 
 type OrderTableProps = {
   rows: IOrder[];
+  deleteOrder(product: IOrder): void;
 };
 
-const OrderTable: React.FC<OrderTableProps> = ({ rows }) => {
+const OrderTable: React.FC<OrderTableProps> = ({ rows, deleteOrder }) => {
   // return <h1>asdasd</h1>
   const router = useRouter();
 
@@ -57,7 +58,11 @@ const OrderTable: React.FC<OrderTableProps> = ({ rows }) => {
               <TableCell align="center">{row.FinalPrice}</TableCell>
               <TableCell align="center">
                 <Stack direction="row" spacing={1} justifyContent="center">
-                  <IconButton aria-label="delete" color="error">
+                  <IconButton
+                    aria-label="delete"
+                    color="error"
+                    onClick={() => deleteOrder(row)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                   <IconButton
