@@ -38,7 +38,7 @@ const OrderPage: React.FC<OrderPageProps> = async ({ params }) => {
     <Box sx={{ margin: "32px 0 16px" }}>
       <br />
       <OrderPageDetail
-        title={orderDefaultValues.ID !== "0" ? "Edit Order" : "Add Order"}
+        title={orderDefaultValues.ID !== "" ? "Edit Order" : "Add Order"}
         order={orderDefaultValues}
         products={productsData.data}
       />
