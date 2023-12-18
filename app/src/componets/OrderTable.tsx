@@ -7,23 +7,28 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import IOrder from "@/app/src/interfaces/Order";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 
 import dynamic from "next/dynamic";
+import { MenuItem, Select } from "@mui/material";
+import OrderDto, { OrderStatus } from "../api/models/Order";
 const IconButton = dynamic(() => import("@mui/material/IconButton"));
 const Stack = dynamic(() => import("@mui/material/Stack"));
 
 type OrderTableProps = {
-  rows: IOrder[];
-  deleteOrder(product: IOrder): void;
+  rows: OrderDto[];
+  deleteOrder(product: OrderDto): void;
+  changeStatus(product: OrderDto): void;
 };
 
-const OrderTable: React.FC<OrderTableProps> = ({ rows, deleteOrder }) => {
-  // return <h1>asdasd</h1>
+const OrderTable: React.FC<OrderTableProps> = ({
+  rows,
+  deleteOrder,
+  changeStatus,
+}) => {
   const router = useRouter();
 
   return (
@@ -36,6 +41,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ rows, deleteOrder }) => {
             <TableCell align="center">Date</TableCell>
             <TableCell align="center">Products</TableCell>
             <TableCell align="center">Final Price</TableCell>
+            <TableCell align="center">Status</TableCell>
             <TableCell align="center">Options</TableCell>
           </TableRow>
         </TableHead>
@@ -55,7 +61,25 @@ const OrderTable: React.FC<OrderTableProps> = ({ rows, deleteOrder }) => {
               <TableCell align="center">
                 {row.Products.map((p) => p.Product.Name).join(", ")}
               </TableCell>
-              <TableCell align="center">{row.FinalPrice}</TableCell>
+              <TableCell align="center">{row.FinalPrice.toFixed(2)}</TableCell>
+              <TableCell align="center">
+                <Select
+                  value={row.Status}
+                  label="Age"
+                  size="small"
+                  disabled={row.Status === "Completed"}
+                  onChange={(e) =>
+                    changeStatus({
+                      ...row,
+                      Status: e.target.value as OrderStatus,
+                    })
+                  }
+                >
+                  <MenuItem value={"Pending"}>Pending</MenuItem>
+                  <MenuItem value={"InProgress"}>In Progress</MenuItem>
+                  <MenuItem value={"Completed"}>Completed</MenuItem>
+                </Select>
+              </TableCell>
               <TableCell align="center">
                 <Stack direction="row" spacing={1} justifyContent="center">
                   <IconButton
@@ -66,9 +90,16 @@ const OrderTable: React.FC<OrderTableProps> = ({ rows, deleteOrder }) => {
                     <DeleteIcon />
                   </IconButton>
                   <IconButton
+                    // disabled={row.Status === "Completed"}
                     color="info"
                     aria-label="add an edit"
-                    onClick={() => router.push(`/add-order/${row.ID}`)}
+                    onClick={() => {
+                      if (row.Status === "Completed") {
+                        alert("You can't modify a completed order");
+                        return;
+                      }
+                      router.push(`/add-order/${row.ID}`);
+                    }}
                   >
                     <EditIcon />
                   </IconButton>

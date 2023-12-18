@@ -1,14 +1,14 @@
 "use client";
 import OrderForm from "@/app/src/componets/OrderForm";
-import IOrder from "@/app/src/interfaces/Order";
-import IProduct from "@/app/src/interfaces/Product";
 import { SubmitHandler } from "react-hook-form";
 import { orderRepository } from "@/app/src/api/repositories";
 import { ShowLoader } from "@/app/src/tools/loader";
+import OrderDto from "@/app/src/api/models/Order";
+import ProductDTO from "@/app/src/api/models/Product";
 
 type OrderPageDetailProps = {
-  order: IOrder;
-  products: IProduct[];
+  order: OrderDto;
+  products: ProductDTO[];
   title: string;
 };
 
@@ -17,7 +17,7 @@ const OrderPageDetail: React.FC<OrderPageDetailProps> = ({
   products,
   title,
 }) => {
-  const onSubmit: SubmitHandler<IOrder> = async (data) => {
+  const onSubmit: SubmitHandler<OrderDto> = async (data) => {
     try {
       ShowLoader(true);
       if (data.ID === "") {
@@ -28,7 +28,7 @@ const OrderPageDetail: React.FC<OrderPageDetailProps> = ({
       }
       const response = await orderRepository.updateOrder(
         data.ID,
-        data as IOrder
+        data as OrderDto
       );
 
       if (response.status >= 300) throw new Error(response.message);

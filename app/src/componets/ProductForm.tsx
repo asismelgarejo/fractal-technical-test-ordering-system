@@ -8,15 +8,16 @@ import {
   Box,
   Autocomplete,
 } from "@mui/material";
-import IProduct, { IProductOrder } from "../interfaces/Product";
-type CustomIProductOrder = Omit<IProductOrder, "Product"> & {
-  Product: IProduct | null;
+import { ProductOrderDTO } from "../api/models";
+import ProductDTO from "../api/models/Product";
+type CustomIProductOrder = Omit<ProductOrderDTO, "Product"> & {
+  Product: ProductDTO | null;
 };
 
 type ProductFormProps = {
   onSubmit: SubmitHandler<CustomIProductOrder>;
   defaultValues: CustomIProductOrder;
-  products: IProduct[];
+  products: ProductDTO[];
 };
 
 const ProductForm: React.FC<ProductFormProps> = ({

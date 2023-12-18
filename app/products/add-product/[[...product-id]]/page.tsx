@@ -1,5 +1,3 @@
-import IProduct from "@/app/src/interfaces/Product";
-
 import { Box } from "@mui/material";
 import React from "react";
 import ProductPageDetail from "./ProductPageDetail";
@@ -20,7 +18,18 @@ const ProductPage: React.FC<ProductPageProps> = async ({ params }) => {
   };
   if (productId) {
     const { data: productData } = await getProductData(productId[0]);
-    if (productData === null) throw new Error("Product not found");
+    if (productData === null) {
+      return (
+        <div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <h2>An unexpected error happened</h2>
+        </div>
+      );
+    }
+
     productDefaultValues = productData;
   }
 
@@ -43,7 +52,15 @@ export const dynamic = "force-dynamic";
 
 const getProductData = async (
   id: string
-): Promise<{ data: ProductDTO }> => {
-  const { data } = await productRepository.getProduct(id);
-  return { data };
+): Promise<{ data: ProductDTO | null }> => {
+  try {
+    const { data, status, message } = await productRepository.getProduct(id);
+    if (status >= 300) {
+      throw new Error(message);
+    }
+    return { data };
+  } catch (err) {
+    console.log(err);
+    return { data: null };
+  }
 };

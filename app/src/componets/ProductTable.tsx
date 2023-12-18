@@ -12,14 +12,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
 
 import dynamic from "next/dynamic";
-import { IProductOrder } from "../interfaces/Product";
+import { ProductOrderDTO } from "../api/models";
 const IconButton = dynamic(() => import("@mui/material/IconButton"));
 const Stack = dynamic(() => import("@mui/material/Stack"));
 
 type ProductTableProps = {
-  rows: IProductOrder[];
-  selectProduct(product: IProductOrder): void;
-  deleteProduct(product: IProductOrder): void;
+  rows: ProductOrderDTO[];
+  selectProduct(product: ProductOrderDTO): void;
+  deleteProduct(product: ProductOrderDTO): void;
 };
 
 const ProductTable: React.FC<ProductTableProps> = ({

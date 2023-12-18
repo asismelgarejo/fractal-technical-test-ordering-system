@@ -1,5 +1,4 @@
 "use client";
-import IProduct from "@/app/src/interfaces/Product";
 import { Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
@@ -8,17 +7,18 @@ import ProductTable from "./ProductTable";
 import { ShowLoader } from "../src/tools/loader";
 import { productRepository } from "../src/api/repositories/Product.repository";
 import DialogConfimation from "../src/componets/DialogConfimation";
+import ProductDTO from "../src/api/models/Product";
 
 type HomePageProps = {
-  products: IProduct[];
+  products: ProductDTO[];
 };
 const HomePage: React.FC<HomePageProps> = ({ products }) => {
   const router = useRouter();
   const [openRemoveProductDialog, setOpenRemoveProductDialog] = useState(false);
 
-  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductDTO | null>(null);
 
-  const removeProduct = async (productData: IProduct) => {
+  const removeProduct = async (productData: ProductDTO) => {
     try {
       ShowLoader(true);
       const response = await productRepository.deleteProduct(productData.ID);

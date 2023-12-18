@@ -10,23 +10,23 @@ import {
   Paper,
   InputLabel,
 } from "@mui/material";
-import IOrder from "../interfaces/Order";
 import AddIcon from "@mui/icons-material/Add";
 import ProductTable from "./ProductTable";
 import OrderProductDialog from "./OrderProductDialog";
 import ProductForm from "./ProductForm";
-import IProduct, { IProductOrder } from "../interfaces/Product";
 import RemoveProductModal from "./DialogConfimation";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import OrderDto from "../api/models/Order";
+import ProductDTO, { ProductOrderDTO } from "../api/models/Product";
 
 type OrderFormProps = {
   title: string;
-  onSubmit: SubmitHandler<IOrder>;
-  defaultValues: IOrder;
-  products: IProduct[];
+  onSubmit: SubmitHandler<OrderDto>;
+  defaultValues: OrderDto;
+  products: ProductDTO[];
 };
 
 const OrderForm: React.FC<OrderFormProps> = ({
@@ -35,7 +35,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
   onSubmit,
   defaultValues,
 }) => {
-  const { control, handleSubmit, getValues, setValue } = useForm<IOrder>({
+  const { control, handleSubmit, getValues, setValue } = useForm<OrderDto>({
     defaultValues,
   });
 
@@ -52,18 +52,18 @@ const OrderForm: React.FC<OrderFormProps> = ({
     setSelectedProduct(null);
   };
 
-  const [selectedProduct, setSelectedProduct] = useState<IProductOrder | null>(
+  const [selectedProduct, setSelectedProduct] = useState<ProductOrderDTO | null>(
     null
   );
 
-  const removeProduct = (product: IProductOrder) => {
+  const removeProduct = (product: ProductOrderDTO) => {
     const products = getValues("Products");
     setValue(
       "Products",
       products.filter((p) => p.Product.ID !== product.Product.ID)
     );
   };
-  const addProduct = (product: IProductOrder) => {
+  const addProduct = (product: ProductOrderDTO) => {
     const products = getValues("Products");
 
     const idx = products.findIndex((p) => p.Product.ID === product.Product.ID);
@@ -78,7 +78,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
     setValue("Products", products);
   };
-  const updateFinalPrice = (products: IProductOrder[]) => {
+  const updateFinalPrice = (products: ProductOrderDTO[]) => {
     const amount = products.reduce(
       (prev, next) => prev + next.Qty * next.Product.UnitPrice,
       0
@@ -120,6 +120,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     fullWidth
                     variant="outlined"
                     error={!!fieldState.error}
+                    InputProps={{ readOnly: getValues("ID") !== "" }}
                     helperText={
                       fieldState.error ? fieldState.error.message : null
                     }
@@ -138,6 +139,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <DatePicker
                       label="Controlled picker"
                       value={getValues("Date")}
+                      format="dd/MM/yyyy"
                       readOnly={getValues("ID") !== ""}
                       onChange={(newValue) =>
                         setValue("Date", newValue as Date)
@@ -216,7 +218,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
           }
           products={products}
           onSubmit={(orderProduct) => {
-            addProduct(orderProduct as IProductOrder);
+            addProduct(orderProduct as ProductOrderDTO);
             setOpenProductFormDialog(false);
             updateFinalPrice(getValues("Products"));
           }}
