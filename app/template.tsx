@@ -1,22 +1,14 @@
 "use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import { Box } from "@mui/material";
-import Image from "next/image";
+import { MainHeader } from "./src/componets/MainHeader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -48,40 +40,19 @@ function ResponsiveAppBar() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-  return (
-    <AppBar position="static">
-      <Container>
-        <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            Ordering System
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const loader = document.getElementById("globalLoader");
+      const body = document.getElementsByTagName("body");
+      if (loader) loader.style.display = "none";
+      if (body) {
+        body[0].style.overflow = "unset";
+        body[0].style.width = "unset";
+        body[0].style.height = "unset";
+      }
+    }
+  }, []);
+
+  return <MainHeader />;
 }

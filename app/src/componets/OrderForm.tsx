@@ -138,7 +138,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                     <DatePicker
                       label="Controlled picker"
                       value={getValues("Date")}
-                      readOnly
+                      readOnly={getValues("ID") !== ""}
                       onChange={(newValue) =>
                         setValue("Date", newValue as Date)
                       }

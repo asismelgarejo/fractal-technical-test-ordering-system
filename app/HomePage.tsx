@@ -6,7 +6,8 @@ import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import RemoveProductModal from "./src/componets/DialogConfimation";
 import { useState } from "react";
-import { FRACTAL_SERVICE } from "./src/constants/API_URL";
+import { orderRepository } from "./src/api/repositories";
+import { ShowLoader } from "./src/tools/loader";
 
 type HomePageProps = {
   orders: IOrder[];
@@ -19,23 +20,15 @@ const HomePage: React.FC<HomePageProps> = ({ orders }) => {
 
   const removeProduct = async (orderData: IOrder) => {
     try {
-      const res = await fetch(`${FRACTAL_SERVICE}/orders/${orderData.ID}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        cache: "no-store", // disable the cache completely
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to delete order: ${res.statusText}`);
-      }
-
-      alert("Reload the page");
-      return { data: null, status: 200, message: "success" };
+      ShowLoader(true);
+      const response = await orderRepository.deleteOrder(orderData.ID);
+      if (response.status >= 300) throw new Error(response.message);
+      router.refresh();
     } catch (error) {
       console.error("Error deleting order:", error);
-      return { data: null, status: 500, message: "Internal Server Error" };
+      alert("Error deleting order")
+    } finally {
+      ShowLoader(false);
     }
   };
 

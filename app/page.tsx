@@ -1,35 +1,38 @@
-import HomePage from "./HomePage";
-import { Response } from "./src/interfaces/Response";
-import IOrder from "./src/interfaces/Order";
-import { FRACTAL_SERVICE } from "./src/constants/API_URL";
 import { parseISO } from "date-fns";
+import HomePage from "./HomePage";
+import OrderDto from "./src/api/models/Order";
+import { orderRepository } from "./src/api/repositories";
 
-export default async function Page() {
-  const ordersData = await getOrdersData();
 
+const Page = async () => {
+  const { data } = await getData();
+  return (
+    <>
+      <HomePage orders={data.orders} />
+    </>
+  );
+};
+export type PageHomeProps = {
+  data: {
+    orders: OrderDto[];
+  };
+};
+
+export const getData = async (): Promise<PageHomeProps> => {
+  const { data } = await orderRepository.getOrders();
   // compute total order
-  ordersData.data.map((order) => {
+  data.map((order) => {
+    order.Date = parseISO(order.Date + "");
     order.FinalPrice = order.Products.reduce(
       (prev, next) => prev + next.Qty * next.Product.UnitPrice,
       0
     );
   });
+  return {
+    data: {
+      orders: data,
+    },
+  };
+};
 
-  return (
-    <>
-      <HomePage orders={ordersData.data} />
-    </>
-  );
-}
-
-async function getOrdersData(): Promise<Response<IOrder[]>> {
-  const res = await fetch(`${FRACTAL_SERVICE}/orders`, {
-    cache: "no-store", // disable the cache completely
-  });
-  const data: Response<IOrder[]> = await res.json();
-  data.data.forEach((order) => {
-    order.Date = parseISO(order.Date + "");
-  });
-
-  return { data: data.data, status: 200, message: "success" };
-}
+export default Page;
