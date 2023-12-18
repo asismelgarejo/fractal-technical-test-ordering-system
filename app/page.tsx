@@ -3,22 +3,19 @@ import HomePage from "./HomePage";
 import OrderDto from "./src/api/models/Order";
 import { orderRepository } from "./src/api/repositories";
 
-
 const Page = async () => {
-  const { data } = await getData();
+  const { data: orders } = await getData();
   return (
     <>
-      <HomePage orders={data.orders} />
+      <HomePage orders={orders} />
     </>
   );
 };
-export type PageHomeProps = {
-  data: {
-    orders: OrderDto[];
-  };
+type PageHomeProps = {
+  data: OrderDto[];
 };
 
-export const getData = async (): Promise<PageHomeProps> => {
+const getData = async (): Promise<PageHomeProps> => {
   const { data } = await orderRepository.getOrders();
   // compute total order
   data.map((order) => {
@@ -29,9 +26,7 @@ export const getData = async (): Promise<PageHomeProps> => {
     );
   });
   return {
-    data: {
-      orders: data,
-    },
+    data,
   };
 };
 

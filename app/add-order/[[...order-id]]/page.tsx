@@ -24,7 +24,7 @@ const OrderPage: React.FC<OrderPageProps> = async ({ params }) => {
   };
   const { data: productsData } = await productRepository.getProducts();
   if (orderId) {
-    const orderData = await getOrderData(orderId[0]);
+    const { data: orderData } = await getOrderData(orderId[0]);
 
     if (orderData === null) throw new Error("Order not found");
     orderDefaultValues = orderData;
@@ -49,9 +49,8 @@ const OrderPage: React.FC<OrderPageProps> = async ({ params }) => {
   );
 };
 
-export default OrderPage;
 
-export const getOrderData = async (id: string): Promise<OrderDto> => {
+const getOrderData = async (id: string): Promise<{ data: OrderDto }> => {
   const { data: order } = await orderRepository.getOrder(id);
   // compute total order
   order.Date = parseISO(order.Date + "");
@@ -59,5 +58,7 @@ export const getOrderData = async (id: string): Promise<OrderDto> => {
     (prev, next) => prev + next.Qty * next.Product.UnitPrice,
     0
   );
-  return order;
+  return { data: order };
 };
+export const dynamic = "force-dynamic";
+export default OrderPage;

@@ -3,7 +3,6 @@ import OrderForm from "@/app/src/componets/OrderForm";
 import IOrder from "@/app/src/interfaces/Order";
 import IProduct from "@/app/src/interfaces/Product";
 import { SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { orderRepository } from "@/app/src/api/repositories";
 import { ShowLoader } from "@/app/src/tools/loader";
 
@@ -18,15 +17,13 @@ const OrderPageDetail: React.FC<OrderPageDetailProps> = ({
   products,
   title,
 }) => {
-  const router = useRouter();
-
   const onSubmit: SubmitHandler<IOrder> = async (data) => {
     try {
       ShowLoader(true);
       if (data.ID === "") {
         const response = await orderRepository.createOrder(data);
         if (response.status >= 300) throw new Error(response.message);
-        router.push("/");
+        window.location.replace("/")
         return;
       }
       const response = await orderRepository.updateOrder(
@@ -35,8 +32,7 @@ const OrderPageDetail: React.FC<OrderPageDetailProps> = ({
       );
 
       if (response.status >= 300) throw new Error(response.message);
-
-      router.push("/");
+      window.location.replace("/")
     } catch (error: any) {
       console.log(error);
       alert(error?.message ?? "");
