@@ -29,5 +29,5 @@ const getData = async (): Promise<PageHomeProps> => {
     data,
   };
 };
-
+export const dynamic = "force-dynamic";
 export default Page;
